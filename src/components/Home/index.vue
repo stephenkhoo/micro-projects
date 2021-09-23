@@ -13,9 +13,6 @@ export default {
   components: {
     Nav,
     App
-  },
-  metaInfo: {
-    title: 'Landing',
   }
 }
 </script>
