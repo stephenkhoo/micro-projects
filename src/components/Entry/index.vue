@@ -3,6 +3,7 @@
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
       <MaterialInput name="month" placeholder="Month" v-model:value="month"/>
+      <MaterialInput name="date" placeholder="Date" v-model:value="date"/>
     </div>
     <div id="entry-body" class="text-xl">
       <Input name="t" placeholder="T" v-model:value="T" />
@@ -28,12 +29,16 @@ export default {
   },
   methods: {
     submit: async function () {
-      let { T, K, CY, Beng, Hoon, Sim } = this;
+      let { T, K, CY, Beng, Hoon, Sim, year, month, date } = this;
+      let datestring = `${year}-${('00' + month).substr(-2)}-${('00' + date).substr(-2)}`;
+      let fulldate = Date.parse(datestring);
+
       fetch("https://notion-api.imaginepen.com/v1/pages", {
         method: 'POST',
         body: JSON.stringify({
           parent: { database_id: "d5a1624f88e54bf0a458dacde772b34f" },
           properties: {
+            ...(isNaN(fulldate)? {}: { Date: { start: datestring } }),
             version: 1,
             T: parseInt(T),
             K: parseInt(K),
@@ -47,6 +52,7 @@ export default {
         response.json().then(data => {
           if (data.status > 300) {
             alert('Fail');
+            console.log('data', data)
           } else {
             alert('Success');
             console.log('data', data)
@@ -59,6 +65,7 @@ export default {
     return {
       year: (new Date).getFullYear(),
       month: (new Date).getMonth() + 1,
+      date: (new Date).getDate(),
       T: 0,
       K: 0,
       CY: 0,
