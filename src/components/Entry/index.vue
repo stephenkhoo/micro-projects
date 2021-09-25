@@ -1,5 +1,6 @@
 <template>
-  <App title="Entry" :home="true">
+  <App :title="'Entry: ' + Type" :home="true">
+    <a :href="'/v-system/entry.html?type=' + OppositeType" class="text-center my-2 mx-auto block w-64 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change to {{ OppositeType }}</a>
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
       <MaterialInput name="month" placeholder="Month" v-model:value="month"/>
@@ -29,7 +30,7 @@ export default {
   },
   methods: {
     submit: async function () {
-      let { T, K, CY, Beng, Hoon, Sim, year, month, date } = this;
+      let { T, K, CY, Beng, Hoon, Sim, year, month, date, Type } = this;
       let datestring = `${year}-${('00' + month).substr(-2)}-${('00' + date).substr(-2)}`;
       let fulldate = Date.parse(datestring);
 
@@ -46,6 +47,7 @@ export default {
             Beng: parseInt(Beng),
             Hoon: parseInt(Hoon),
             Sim: parseInt(Sim),
+            Type: { "name": Type },
           }
         })
       }).then(response => {
@@ -62,6 +64,13 @@ export default {
     },
   },
   data: function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const type_from_url = urlParams.get('type');
+    if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
+      window.location.href = '/v-system/entry.html';
+    }
+    const type = type_from_url? type_from_url: 'vitagen';
+
     return {
       year: (new Date).getFullYear(),
       month: (new Date).getMonth() + 1,
@@ -71,7 +80,9 @@ export default {
       CY: 0,
       Beng: 0,
       Hoon: 0,
-      Sim: 0
+      Sim: 0,
+      Type: type,
+      OppositeType: type == 'vitagen'? 'vitagen-less-sugar': 'vitagen',
     }
   }
 }
