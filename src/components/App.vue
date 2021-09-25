@@ -1,7 +1,9 @@
 <template>
-  <div class="container mx-auto h-screen overflow-y-auto shadow">
+  <div class="container mx-auto h-screen shadow flex flex-col">
     <div class="w-full py-4 bg-gray-100 text-center">{{ title }}</div>
-    <slot></slot>
+    <div class="flex-1 overflow-auto py-2">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
