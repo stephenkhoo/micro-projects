@@ -1,5 +1,7 @@
 <template>
   <App>
+    <MaterialInput name="yearmonth" placeholder="Year-Month" v-model:value="yearmonth"/>
+    <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
     <div class="overflow-x-auto text-xl h-full">
       <div class="overflow-y-auto max-h-full min-w-full border border-gray-200">
         <div class="sticky top-0">
@@ -68,21 +70,18 @@
 
 <script>
 import App from '../App.vue';
+import MaterialInput from '../MaterialInput.vue';
 
 export default {
   name: 'Report',
   components: {
-    App
+    App, MaterialInput
   },
   mounted () {
     this.fetchRecords();
   },
   methods: {
     fetchRecords() {
-      const now = new Date;
-      const urlParams = new URLSearchParams(window.location.search);
-      const yearmonth_fromurl = urlParams.get('year-month');
-      const yearmonth = yearmonth_fromurl? yearmonth_fromurl: [now.getFullYear(), now.getMonth() + 1].join('-');
 
       fetch("https://notion-api.imaginepen.com/v1/databases/d5a1624f88e54bf0a458dacde772b34f/query", {
         method: 'POST',
@@ -91,7 +90,7 @@ export default {
             and: [{
               "property": "Year Month",
               "text": {
-                "equals": yearmonth,
+                "equals": this.yearmonth,
               }
             }],
           },
@@ -113,10 +112,19 @@ export default {
         });
       }).catch(err => console.log('Fail', err));
       this.records;
+    },
+    search: function () {
+      window.location.href = window.location.pathname + '?year-month=' + this.yearmonth;
     }
   },
   data: function () {
+    const now = new Date;
+    const urlParams = new URLSearchParams(window.location.search);
+    const yearmonth_fromurl = urlParams.get('year-month');
+    const yearmonth = yearmonth_fromurl? yearmonth_fromurl: [now.getFullYear(), now.getMonth() + 1].join('-');
+
     return {
+      yearmonth,
       records: [],
     }
   }
