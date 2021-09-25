@@ -1,6 +1,5 @@
 <template>
   <App>
-    {{ records.length }}
     <div class="overflow-x-auto text-xl h-full">
       <div class="overflow-y-auto max-h-full min-w-full border border-gray-200">
         <div class="sticky top-0">
