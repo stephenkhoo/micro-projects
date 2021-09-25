@@ -35,13 +35,13 @@
           <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
             Month total
           </div>
-          <NoOfPackage :no_of_package="total_of_account('T')" />
-          <NoOfPackage :no_of_package="total_of_account('K')" />
-          <NoOfPackage :no_of_package="total_of_account('CY')" />
-          <NoOfPackage :no_of_package="total_of_account('Beng')" />
-          <NoOfPackage :no_of_package="total_of_account('Hoon')" />
-          <NoOfPackage :no_of_package="total_of_account('Sim')" />
-          <NoOfPackage :no_of_package="total_of_this_month()" />
+          <NoOfPackageAndIncentive :data="total_of_account('T')" />
+          <NoOfPackageAndIncentive :data="total_of_account('K')" />
+          <NoOfPackageAndIncentive :data="total_of_account('CY')" />
+          <NoOfPackageAndIncentive :data="total_of_account('Beng')" />
+          <NoOfPackageAndIncentive :data="total_of_account('Hoon')" />
+          <NoOfPackageAndIncentive :data="total_of_account('Sim')" />
+          <NoOfPackageAndIncentive :data="total_of_this_month()" />
         </div>
       </div>
       <div class="px-4 py-4 border-b" v-else>
@@ -55,11 +55,12 @@
 import App from '../App.vue';
 import MaterialInput from '../MaterialInput.vue';
 import NoOfPackage from '../NoOfPackage.vue';
+import NoOfPackageAndIncentive from '../NoOfPackageAndIncentive.vue';
 
 export default {
   name: 'Report',
   components: {
-    App, MaterialInput, NoOfPackage
+    App, MaterialInput, NoOfPackage, NoOfPackageAndIncentive
   },
   mounted () {
     this.fetchRecords();
@@ -67,13 +68,36 @@ export default {
   },
   methods: {
     total_of_package(record) {
-      return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(key => record.properties[key].number || 0).reduce((cul, value) => cul + value);
+      return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(account => record.properties[account].number || 0).reduce((cul, value) => cul + value);
     },
     total_of_account(account) {
-      return this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
+      let no_of_package = this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
+
+      let incentive = 0;
+      let tier = this.tiers.find(tier => no_of_package > tier.min);
+      if (tier) {
+        incentive = tier.incentive;
+      }
+
+      return {
+        no_of_package, incentive
+      }
     },
     total_of_this_month() {
-      return this.records.map(record => this.total_of_package(record)).reduce((cul, value) => cul + value);
+      let array_of_total = ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim']
+        .map(account => this.total_of_account(account));
+
+      let no_of_package = array_of_total
+        .map(total => total.no_of_package)
+        .reduce((cul, value) => cul + value);
+
+      let incentive = array_of_total
+        .map(total => total.incentive)
+        .reduce((cul, value) => cul + value);
+
+      return {
+        no_of_package, incentive
+      }
     },
     // total_of_package_and_incentive() {
     //   let no_of_package = 0;
@@ -134,7 +158,7 @@ export default {
           sorts: [
             {
               "property": "Min",
-              "direction": "ascending"
+              "direction": "descending"
             }
           ]
         })
@@ -144,7 +168,12 @@ export default {
             console.log('fail', data)
           } else {
             console.log('success', data)
-            this.tiers = data.results.filter(row => row.properties.Type.select.name == this.Type);
+            this.tiers = data.results
+              .filter(tier => tier.properties.Type.select.name == this.Type)
+              .map(tier => ({
+                min: tier.properties['Min'].number,
+                incentive: tier.properties['Incentive'].number,
+              }));
           }
         });
       }).catch(err => console.log('Fail', err));
