@@ -17,52 +17,57 @@
           <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Total</div>
         </div>
       </div>
-      <div class="flex" v-for="record in records" :key="record.id">
-        <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['Date'].date.start }}
+      <div v-if="records.length">
+        <div class="flex" v-for="record in records" :key="record.id">
+          <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['Date'].date.start }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['T'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['T'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['K'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['K'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['CY'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['CY'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['Beng'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['Beng'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['Hoon'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['Hoon'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            {{ record.properties['Sim'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            {{ record.properties['Sim'].number || 0 }}
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            TP
+          </div>
+          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
+            TI
+          </div>
         </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['T'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['T'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['K'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['K'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['CY'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['CY'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['Beng'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['Beng'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['Hoon'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['Hoon'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          {{ record.properties['Sim'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-          {{ record.properties['Sim'].number || 0 }}
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          TP
-        </div>
-        <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-          TI
-        </div>
+      </div>
+      <div class="px-4 py-4 border-b" v-else>
+        No records
       </div>
     </div>
   </App>
