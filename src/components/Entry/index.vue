@@ -1,5 +1,5 @@
 <template>
-  <App title="Entry">
+  <App title="Entry" :home="true">
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
       <MaterialInput name="month" placeholder="Month" v-model:value="month"/>

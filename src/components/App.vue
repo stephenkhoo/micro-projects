@@ -1,6 +1,13 @@
 <template>
   <div class="container mx-auto h-screen shadow flex flex-col">
-    <div class="w-full py-4 bg-gray-100 text-center">{{ title }}</div>
+    <div class="w-full py-4 bg-gray-100 text-center flex flex-start">
+      <div v-if="home">
+        <a href="/v-system" class="text-center my-2 mx-auto w-32 font-bold py-2 px-4 rounded">Home</a>
+      </div>
+      <span class="mx-4">
+        {{ title }}
+      </span>
+    </div>
     <div class="flex-1 overflow-auto py-2">
       <slot></slot>
     </div>
@@ -11,7 +18,8 @@
 export default {
   name: 'App',
   props: {
-    title: String
+    title: String,
+    home: Boolean,
   }
 }
 </script>
