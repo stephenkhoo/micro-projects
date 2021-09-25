@@ -23,48 +23,25 @@
           <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
             {{ record.properties['Date'].date.start }}
           </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['T'].number || 0 }}
+          <NoOfPackage :no_of_package="record.properties['T'].number" />
+          <NoOfPackage :no_of_package="record.properties['K'].number" />
+          <NoOfPackage :no_of_package="record.properties['CY'].number" />
+          <NoOfPackage :no_of_package="record.properties['Beng'].number" />
+          <NoOfPackage :no_of_package="record.properties['Hoon'].number" />
+          <NoOfPackage :no_of_package="record.properties['Sim'].number" />
+          <NoOfPackage :no_of_package="total_of_package(record)" />
+        </div>
+        <div class="flex">
+          <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+            Month total
           </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['T'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['K'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['K'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['CY'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['CY'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['Beng'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['Beng'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['Hoon'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['Hoon'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            {{ record.properties['Sim'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['Sim'].number || 0 }}
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            TP
-          </div>
-          <div class="w-16 flex-grow-1 flex-shrink-0 text-right px-4 py-4 border-b">
-            TI
-          </div>
+          <NoOfPackage :no_of_package="total_of_account('T')" />
+          <NoOfPackage :no_of_package="total_of_account('K')" />
+          <NoOfPackage :no_of_package="total_of_account('CY')" />
+          <NoOfPackage :no_of_package="total_of_account('Beng')" />
+          <NoOfPackage :no_of_package="total_of_account('Hoon')" />
+          <NoOfPackage :no_of_package="total_of_account('Sim')" />
+          <NoOfPackage :no_of_package="total_of_this_month()" />
         </div>
       </div>
       <div class="px-4 py-4 border-b" v-else>
@@ -77,23 +54,44 @@
 <script>
 import App from '../App.vue';
 import MaterialInput from '../MaterialInput.vue';
+import NoOfPackage from '../NoOfPackage.vue';
 
 export default {
   name: 'Report',
   components: {
-    App, MaterialInput
+    App, MaterialInput, NoOfPackage
   },
   mounted () {
     this.fetchRecords();
     this.fetchIncentiveTiers();
   },
   methods: {
-    incentiveLs(no_of_package) {
-      return no_of_package;
+    total_of_package(record) {
+      return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(key => record.properties[key].number || 0).reduce((cul, value) => cul + value);
     },
-    incentiveNormal(no_of_package) {
-      return no_of_package;
+    total_of_account(account) {
+      return this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
     },
+    total_of_this_month() {
+      return this.records.map(record => this.total_of_package(record)).reduce((cul, value) => cul + value);
+    },
+    // total_of_package_and_incentive() {
+    //   let no_of_package = 0;
+    //   let incentive = 0;
+
+    //   return {
+    //     no_of_package,
+    //     incentive,
+    //   };
+    // },
+    // no_of_package_and_incentive(record, key) {
+    //   let no_of_package = record.properties[key].number || 0
+    //   let incentive = record.properties[key].number || 0;
+    //   return {
+    //       no_of_package,
+    //       incentive,
+    //   };
+    // },
     fetchRecords() {
       fetch("https://notion-api.imaginepen.com/v1/databases/d5a1624f88e54bf0a458dacde772b34f/query", {
         method: 'POST',
@@ -146,8 +144,7 @@ export default {
             console.log('fail', data)
           } else {
             console.log('success', data)
-            this.v_tiers = data.results.filter(row => row.properties.Type.select.name == 'vitagen');
-            this.vls_tiers = data.results.filter(row => row.properties.Type.select.name == 'vitagen-less-sugar');
+            this.tiers = data.results.filter(row => row.properties.Type.select.name == this.Type);
           }
         });
       }).catch(err => console.log('Fail', err));
@@ -174,8 +171,7 @@ export default {
     return {
       yearmonth,
       records: [],
-      v_tiers: [],
-      vls_tiers: [],
+      tiers: [],
       Type: type,
     }
   }
