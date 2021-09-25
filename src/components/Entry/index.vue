@@ -1,5 +1,5 @@
 <template>
-  <App :title="'Entry: ' + Type" :home="true">
+  <App :title="'Entry for ' + Type" :home="true">
     <a :href="'/v-system/entry.html?type=' + OppositeType" class="text-center my-2 mx-auto block w-64 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change to {{ OppositeType }}</a>
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>

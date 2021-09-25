@@ -1,7 +1,8 @@
 <template>
-  <App title="Records" :home="true">
+  <App :title="'Record for ' + Type" :home="true">
     <div class="w-full sticky left-0">
       <MaterialInput name="yearmonth" placeholder="Year-Month" v-model:value="yearmonth"/>
+      <MaterialInput name="type" placeholder="Type" v-model:value="Type"/>
       <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
     </div>
     <div class="max-h-full border-gray-200 text-xl">
@@ -84,10 +85,16 @@ export default {
   },
   mounted () {
     this.fetchRecords();
+    this.fetchIncentiveTiers();
   },
   methods: {
+    incentiveLs(no_of_package) {
+      return no_of_package;
+    },
+    incentiveNormal(no_of_package) {
+      return no_of_package;
+    },
     fetchRecords() {
-
       fetch("https://notion-api.imaginepen.com/v1/databases/d5a1624f88e54bf0a458dacde772b34f/query", {
         method: 'POST',
         body: JSON.stringify({
@@ -96,6 +103,11 @@ export default {
               "property": "Year Month",
               "text": {
                 "equals": this.yearmonth,
+              }
+            }, {
+              "property": "Type",
+              "select": {
+                "equals": this.Type,
               }
             }],
           },
@@ -116,10 +128,35 @@ export default {
           }
         });
       }).catch(err => console.log('Fail', err));
-      this.records;
+    },
+    fetchIncentiveTiers() {
+      fetch("https://notion-api.imaginepen.com/v1/databases/ee5f100af12b43789e16e58c2f5ecf91/query", {
+        method: 'POST',
+        body: JSON.stringify({
+          sorts: [
+            {
+              "property": "Min",
+              "direction": "ascending"
+            }
+          ]
+        })
+      }).then(response => {
+        response.json().then(data => {
+          if (data.status > 300) {
+            console.log('fail', data)
+          } else {
+            console.log('success', data)
+            this.v_tiers = data.results.filter(row => row.properties.Type.select.name == 'vitagen');
+            this.vls_tiers = data.results.filter(row => row.properties.Type.select.name == 'vitagen-less-sugar');
+          }
+        });
+      }).catch(err => console.log('Fail', err));
     },
     search: function () {
-      window.location.href = window.location.pathname + '?year-month=' + this.yearmonth;
+      if (['vitagen', 'vitagen-less-sugar'].indexOf(this.Type ?? 'vitagen') == -1) {
+        this.Type = 'vitagen';
+      }
+      window.location.href = window.location.pathname + '?year-month=' + this.yearmonth + '&type=' + this.Type;
     }
   },
   data: function () {
@@ -128,9 +165,18 @@ export default {
     const yearmonth_fromurl = urlParams.get('year-month');
     const yearmonth = yearmonth_fromurl? yearmonth_fromurl: [now.getFullYear(), now.getMonth() + 1].join('-');
 
+    const type_from_url = urlParams.get('type');
+    if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
+      window.location.href = '/v-system/entry.html';
+    }
+    const type = type_from_url? type_from_url: 'vitagen';
+
     return {
       yearmonth,
       records: [],
+      v_tiers: [],
+      vls_tiers: [],
+      Type: type,
     }
   }
 }
