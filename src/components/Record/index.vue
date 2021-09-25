@@ -1,17 +1,15 @@
 <template>
-  <App title="Home">
-    <Nav />
+  <App>
+    Hello there
   </App>
 </template>
 
 <script>
 import App from '../App.vue';
-import Nav from './Nav.vue';
 
 export default {
-  name: 'Home',
+  name: 'Report',
   components: {
-    Nav,
     App
   }
 }

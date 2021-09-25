@@ -47,7 +47,19 @@ module.exports = {
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'report']
     },
-    // entry: 'src/entry.js',
-    // report: 'src/report.js'
+    record: {
+      // entry for the page
+      entry: 'src/record.js',
+      // the source template
+      template: 'public/index.html',
+      // output as dist/index.html
+      filename: 'record.html',
+      // when using title option,
+      // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
+      title: 'Entry',
+      // chunks to include on this page, by default includes
+      // extracted common chunks and vendor chunks.
+      chunks: ['chunk-vendors', 'chunk-common', 'record']
+    },
   }
 }
