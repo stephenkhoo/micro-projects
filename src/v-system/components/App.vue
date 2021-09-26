@@ -8,7 +8,7 @@
         {{ title }}
       </span>
     </div>
-    <div class="flex-1 overflow-auto py-2">
+    <div class="flex-1 overflow-auto my-2">
       <slot></slot>
     </div>
   </div>

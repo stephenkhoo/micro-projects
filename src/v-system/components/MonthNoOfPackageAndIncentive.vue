@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     total_of_account(account) {
+      if (!this.records.length) return { no_of_package: 0, incentive: 0 };
       let no_of_package = this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
 
       let incentive = 0;
@@ -41,6 +42,7 @@ export default {
       }
     },
     total_of_this_month() {
+      if (!this.records.length) return { no_of_package: 0, incentive: 0 };
       let array_of_total = ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim']
         .map(account => this.total_of_account(account));
 

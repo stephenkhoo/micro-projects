@@ -37,7 +37,7 @@ import NoOfPackage from '../NoOfPackage.vue';
 import MonthNoOfPackageAndIncentive from '../MonthNoOfPackageAndIncentive.vue';
 
 export default {
-  name: 'Report',
+  name: 'Record',
   components: {
     App, MaterialInput, TableHeader, NoOfPackage, MonthNoOfPackageAndIncentive
   },
