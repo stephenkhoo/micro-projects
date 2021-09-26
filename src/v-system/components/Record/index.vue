@@ -1,9 +1,17 @@
 <template>
-  <App :title="'Record for ' + Type" :home="true">
+  <App :title="'Record for ' + OriginalType" :home="true">
     <div class="w-full sticky left-0">
       <MaterialInput name="yearmonth" placeholder="Year-Month" v-model:value="yearmonth"/>
-      <MaterialInput name="type" placeholder="Type" v-model:value="Type"/>
-      <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+      <div @click="toggleType" class="group relative mx-auto max-w-[300px] my-8 w-1/2 flex justify-between border-b-2 focus-within:border-blue-500">
+        <input placeholder=" "
+          class="focus:outline-none mt-2 mb-1 px-1 bg-transparent"
+          id="type"
+          name="type"
+          :value="Type"
+        />
+        <label class="placeholder:text-transparent origin-top-left group-focus-within:-translate-y-5 group-focus-within:scale-75 group-focus-within:text-blue-500 absolute top-0 left-0 mt-2 mb-1 px-1 -z-1 duration-200 transition-transform" for="type">Type</label>
+      </div>
+      <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
     </div>
     <div class="max-h-full border-gray-200 text-xl">
       <TableHeader />
@@ -111,6 +119,9 @@ export default {
         });
       }).catch(err => console.log('Fail', err));
     },
+    toggleType: function () {
+      this.Type = this.Type == 'vitagen'? 'vitagen-less-sugar': 'vitagen';
+    },
     search: function () {
       if (['vitagen', 'vitagen-less-sugar'].indexOf(this.Type ?? 'vitagen') == -1) {
         this.Type = 'vitagen';
@@ -135,6 +146,7 @@ export default {
       records: [],
       tiers: [],
       Type: type,
+      OriginalType: type,
     }
   }
 }
@@ -149,5 +161,11 @@ export default {
 }
 .-z-1 {
   z-index: -1;
+}
+input:not(:placeholder-shown) ~ label {
+  --tw-scale-x: 0.75;
+  --tw-scale-y: 0.75;
+  --tw-translate-y: -1.25rem;
+  transform: var(--tw-transform);
 }
 </style>
