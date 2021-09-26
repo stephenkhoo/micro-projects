@@ -20,6 +20,9 @@ export default {
   props: {
     title: String,
     home: Boolean,
+  },
+  data() {
+    publicPath: process.env.BASE_URL
   }
 }
 </script>
