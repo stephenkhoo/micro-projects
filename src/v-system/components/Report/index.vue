@@ -7,10 +7,10 @@
     </div>
     <div class="max-h-full border-gray-200 text-xl">
       <TableHeader />
-      <MonthNoOfPackageAndIncentive v-for="month in 12" :key="month" :title="[year, month].join('-')" :records="recordsOfMonth(year, month)" :tiers="tiers"/>
+      <MonthNoOfPackageAndIncentive v-for="month in 12" :key="month" :title="[current_year, month].join('-')" :records="recordsOfMonth(current_year, month)" :tiers="tiers"/>
     <div class="flex">
       <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-3 py-4 border-b border-r border-gray-200">
-        {{ year }}
+        {{ current_year }}
       </div>
       <NoOfPackageAndIncentive :data="total_of_account('T')" />
       <NoOfPackageAndIncentive :data="total_of_account('K')" />
@@ -93,7 +93,7 @@ export default {
             and: [{
               "property": "Year",
               "text": {
-                "equals": this.year.toFixed(0),
+                "equals": this.year,
               }
             }, {
               "property": "Type",
@@ -151,14 +151,14 @@ export default {
       if (['vitagen', 'vitagen-less-sugar'].indexOf(this.Type ?? 'vitagen') == -1) {
         this.Type = 'vitagen';
       }
-      window.location.href = window.location.pathname + '?year-month=' + this.year + '&type=' + this.Type;
+      window.location.href = window.location.pathname + '?year=' + this.year + '&type=' + this.Type;
     }
   },
   data: function () {
     const now = new Date;
     const urlParams = new URLSearchParams(window.location.search);
     const year_fromurl = urlParams.get('year');
-    const year = year_fromurl? year_fromurl: now.getFullYear();
+    const year = year_fromurl? year_fromurl: now.getFullYear().toFixed(0);
 
     const type_from_url = urlParams.get('type');
     if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
@@ -168,6 +168,7 @@ export default {
 
     return {
       year,
+      current_year: year,
       records: [],
       tiers: [],
       Type: type,
