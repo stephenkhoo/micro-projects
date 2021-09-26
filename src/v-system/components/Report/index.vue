@@ -162,7 +162,7 @@ export default {
 
     const type_from_url = urlParams.get('type');
     if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
-      window.location.href = '/v-system/entry.html';
+      window.location.href = window.location.pathname;
     }
     const type = type_from_url? type_from_url: 'vitagen';
 
