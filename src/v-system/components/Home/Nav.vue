@@ -6,6 +6,11 @@
 
 <script>
 export default {
-  name: 'Nav'
+  name: 'Nav',
+  data() {
+    return {
+      publicPath: process.env.BASE_URL
+    }
+  }
 }
 </script>

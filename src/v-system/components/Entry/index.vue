@@ -83,6 +83,7 @@ export default {
       Sim: 0,
       Type: type,
       OppositeType: type == 'vitagen'? 'vitagen-less-sugar': 'vitagen',
+      publicPath: process.env.BASE_URL
     }
   }
 }
