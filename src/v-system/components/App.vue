@@ -2,8 +2,7 @@
   <div class="container mx-auto h-screen shadow flex flex-col">
     <div class="w-full py-4 bg-gray-100 text-center flex flex-start">
       <div v-if="home">
-        <a :href="`${return {
-          publicPath}/v-system`" class="text-center my-2 mx-auto w-32 font-bold py-2 px-4 rounded">Home
+        <a :href="`${publicPath}/v-system`" class="text-center my-2 mx-auto w-32 font-bold py-2 px-4 rounded">Home
         }</a>
       </div>
       <span class="mx-4">
