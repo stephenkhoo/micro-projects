@@ -13,6 +13,9 @@ function page(name, entry, filename, title) {
 }
 
 module.exports = {
+  publicPath: process.env.GH_PAGES === 'true'
+    ? '/micro-projects/'
+    : '/',
   pages: {
     index: page('index', 'src/v-system/main.js', 'v-system/index.html', 'V-system Landing'),
     entry: page('entry', 'src/v-system/entry.js', 'v-system/entry.html', 'V-system Entry'),
