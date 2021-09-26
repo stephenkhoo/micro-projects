@@ -1,6 +1,6 @@
 <template>
-  <div class="flex even:bg-gray-100">
-    <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
+  <div class="flex">
+    <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-3 py-4 border-b border-r border-gray-200">
       {{ title }}
     </div>
     <NoOfPackageAndIncentive :data="total_of_account('T')" />

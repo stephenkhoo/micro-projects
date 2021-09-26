@@ -8,7 +8,7 @@
     <div class="max-h-full border-gray-200 text-xl">
       <TableHeader />
       <div v-if="records.length">
-        <div class="flex even:bg-gray-100" v-for="record in records" :key="record.id">
+        <div class="flex" v-for="record in records" :key="record.id">
           <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
             {{ record.properties['Date'].date.start }}
           </div>
