@@ -6,18 +6,7 @@
       <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
     </div>
     <div class="max-h-full border-gray-200 text-xl">
-      <div class="sticky top-0">
-        <div class="flex">
-          <div class="font-bold bg-white border-b border-t w-40 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Date</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">T</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">K</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">CY</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Beng</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Hoon</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Sim</div>
-          <div class="font-bold bg-white border-b border-t w-32 flex-grow-1 flex-shrink-0 px-4 py-2 text-center font-medium text-gray-500 uppercase tracking-wider">Total</div>
-        </div>
-      </div>
+      <TableHeader />
       <div v-if="records.length">
         <div class="flex" v-for="record in records" :key="record.id">
           <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
@@ -31,18 +20,7 @@
           <NoOfPackage :no_of_package="record.properties['Sim'].number" />
           <NoOfPackage :no_of_package="total_of_package(record)" />
         </div>
-        <div class="flex">
-          <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            Month total
-          </div>
-          <NoOfPackageAndIncentive :data="total_of_account('T')" />
-          <NoOfPackageAndIncentive :data="total_of_account('K')" />
-          <NoOfPackageAndIncentive :data="total_of_account('CY')" />
-          <NoOfPackageAndIncentive :data="total_of_account('Beng')" />
-          <NoOfPackageAndIncentive :data="total_of_account('Hoon')" />
-          <NoOfPackageAndIncentive :data="total_of_account('Sim')" />
-          <NoOfPackageAndIncentive :data="total_of_this_month()" />
-        </div>
+        <MonthNoOfPackageAndIncentive title="Month total" :records="records" :tiers="tiers"/>
       </div>
       <div class="px-4 py-4 border-b" v-else>
         No records
@@ -54,13 +32,14 @@
 <script>
 import App from '../App.vue';
 import MaterialInput from '../MaterialInput.vue';
+import TableHeader from '../TableHeader.vue';
 import NoOfPackage from '../NoOfPackage.vue';
-import NoOfPackageAndIncentive from '../NoOfPackageAndIncentive.vue';
+import MonthNoOfPackageAndIncentive from '../MonthNoOfPackageAndIncentive.vue';
 
 export default {
   name: 'Report',
   components: {
-    App, MaterialInput, NoOfPackage, NoOfPackageAndIncentive
+    App, MaterialInput, TableHeader, NoOfPackage, MonthNoOfPackageAndIncentive
   },
   mounted () {
     this.fetchRecords();
@@ -70,52 +49,6 @@ export default {
     total_of_package(record) {
       return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(account => record.properties[account].number || 0).reduce((cul, value) => cul + value);
     },
-    total_of_account(account) {
-      let no_of_package = this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
-
-      let incentive = 0;
-      let tier = this.tiers.find(tier => no_of_package > tier.min);
-      if (tier) {
-        incentive = tier.incentive;
-      }
-
-      return {
-        no_of_package, incentive
-      }
-    },
-    total_of_this_month() {
-      let array_of_total = ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim']
-        .map(account => this.total_of_account(account));
-
-      let no_of_package = array_of_total
-        .map(total => total.no_of_package)
-        .reduce((cul, value) => cul + value);
-
-      let incentive = array_of_total
-        .map(total => total.incentive)
-        .reduce((cul, value) => cul + value);
-
-      return {
-        no_of_package, incentive
-      }
-    },
-    // total_of_package_and_incentive() {
-    //   let no_of_package = 0;
-    //   let incentive = 0;
-
-    //   return {
-    //     no_of_package,
-    //     incentive,
-    //   };
-    // },
-    // no_of_package_and_incentive(record, key) {
-    //   let no_of_package = record.properties[key].number || 0
-    //   let incentive = record.properties[key].number || 0;
-    //   return {
-    //       no_of_package,
-    //       incentive,
-    //   };
-    // },
     fetchRecords() {
       fetch("https://notion-api.imaginepen.com/v1/databases/d5a1624f88e54bf0a458dacde772b34f/query", {
         method: 'POST',
