@@ -1,6 +1,6 @@
 <template>
   <App :title="'Entry for ' + Type" :home="true">
-    <a :href="window.location.pathname + '?type=' + OppositeType" class="text-center my-2 mx-auto block w-64 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change to {{ OppositeType }}</a>
+    <a :href="publicPath + 'v-system/entry.html?type=' + OppositeType" class="text-center my-2 mx-auto block w-64 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change to {{ OppositeType }}</a>
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
       <MaterialInput name="month" placeholder="Month" v-model:value="month"/>
