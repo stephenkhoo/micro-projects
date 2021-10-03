@@ -83,7 +83,7 @@ export default {
           if (!month_records.length) return { no_of_package: 0, incentive: 0 };
           let no_of_package = month_records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
           let incentive = 0;
-          let tier = this.getTiers(less_sugar).find(tier => no_of_package > tier.min);
+          let tier = this.getTiers(less_sugar).find(tier => no_of_package >= tier.min);
           if (tier) {
             incentive = tier.incentive;
           }

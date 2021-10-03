@@ -55,7 +55,7 @@ export default {
       let no_of_package = this.records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
 
       let incentive = 0;
-      let tier = this.tiers.find(tier => no_of_package > tier.min);
+      let tier = this.tiers.find(tier => no_of_package >= tier.min);
       if (tier) {
         incentive = tier.incentive;
       }
@@ -69,7 +69,7 @@ export default {
       let no_of_package = this.records_ls.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
 
       let incentive = 0;
-      let tier = this.tiers_ls.find(tier => no_of_package > tier.min);
+      let tier = this.tiers_ls.find(tier => no_of_package >= tier.min);
       if (tier) {
         incentive = tier.incentive;
       }
