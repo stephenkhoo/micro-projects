@@ -1,34 +1,51 @@
 <template>
-  <App :title="'Record for ' + OriginalType" :home="true">
+  <App title="Records" :home="true">
     <div class="w-full sticky left-0">
       <MaterialInput name="yearmonth" placeholder="Year-Month" v-model:value="yearmonth"/>
-      <div @click="toggleType" class="group relative mx-auto max-w-[300px] my-8 w-1/2 flex justify-between border-b-2 focus-within:border-blue-500">
-        <input placeholder=" "
-          class="focus:outline-none mt-2 mb-1 px-1 bg-transparent"
-          id="type"
-          name="type"
-          :value="Type"
-        />
-        <label class="placeholder:text-transparent origin-top-left group-focus-within:-translate-y-5 group-focus-within:scale-75 group-focus-within:text-blue-500 absolute top-0 left-0 mt-2 mb-1 px-1 -z-1 duration-200 transition-transform" for="type">Type</label>
-      </div>
       <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
     </div>
     <div class="max-h-full border-gray-200 text-xl">
       <TableHeader />
-      <div v-if="records.length">
-        <div class="flex" v-for="record in records" :key="record.id">
+      <div v-if="Object.keys(records).length">
+        <div class="flex" v-for="(record, date) in records" :key="record.id">
           <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-4 py-4 border-b border-r border-gray-200">
-            {{ record.properties['Date'].date.start }}
+            {{ date }}
           </div>
-          <NoOfPackage :no_of_package="record.properties['T'].number" />
-          <NoOfPackage :no_of_package="record.properties['K'].number" />
-          <NoOfPackage :no_of_package="record.properties['CY'].number" />
-          <NoOfPackage :no_of_package="record.properties['Beng'].number" />
-          <NoOfPackage :no_of_package="record.properties['Hoon'].number" />
-          <NoOfPackage :no_of_package="record.properties['Sim'].number" />
-          <NoOfPackage :no_of_package="total_of_package(record)" />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['T'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['T'].number"
+          />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['K'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['K'].number"
+          />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['CY'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['CY'].number"
+          />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['Beng'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['Beng'].number"
+          />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['Hoon'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['Hoon'].number"
+          />
+          <NoOfPackage
+           :no_of_package="record['vitagen']?.properties['Sim'].number"
+           :no_of_package_ls="record['vitagen-less-sugar']?.properties['Sim'].number"
+          />
+          <NoOfPackage
+            :no_of_package="total_of_package(record['vitagen'])"
+            :no_of_package_ls="total_of_package(record['vitagen-less-sugar'])"
+          />
         </div>
-        <MonthNoOfPackageAndIncentive title="Month total" :records="records" :tiers="tiers"/>
+        <MonthNoOfPackageAndIncentive title="Month total"
+          :records="Object.values(records).map(record => record['vitagen']).filter(r => r)"
+          :records_ls="Object.values(records).map(record => record['vitagen-less-sugar']).filter(r => r)"
+          :tiers="tiers['vitagen']"
+          :tiers_ls="tiers['vitagen-less-sugar']"
+        />
       </div>
       <div class="px-4 py-4 border-b" v-else>
         No records
@@ -55,7 +72,7 @@ export default {
   },
   methods: {
     total_of_package(record) {
-      return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(account => record.properties[account].number || 0).reduce((cul, value) => cul + value);
+      return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(account => record?.properties[account].number || 0).reduce((cul, value) => cul + value);
     },
     fetchRecords() {
       fetch("https://notion-api.imaginepen.com/v1/databases/d5a1624f88e54bf0a458dacde772b34f/query", {
@@ -66,11 +83,6 @@ export default {
               "property": "Year Month",
               "text": {
                 "equals": this.yearmonth,
-              }
-            }, {
-              "property": "Type",
-              "select": {
-                "equals": this.Type,
               }
             }],
           },
@@ -86,8 +98,14 @@ export default {
           if (data.status > 300) {
             console.log('fail', data)
           } else {
-            console.log('success', data)
-            this.records = data.results;
+            console.log('success', data);
+            data.results.forEach(result => {
+              if (!this.records[result.properties['Date'].date.start]) {
+                this.records[result.properties['Date'].date.start] = {}
+              }
+              this.records[result.properties['Date'].date.start][result.properties['Type'].select.name] = result
+            });
+            console.log(this.records);
           }
         });
       }).catch(err => console.log('Fail', err));
@@ -108,25 +126,21 @@ export default {
           if (data.status > 300) {
             console.log('fail', data)
           } else {
-            console.log('success', data)
-            this.tiers = data.results
-              .filter(tier => tier.properties.Type.select.name == this.Type)
-              .map(tier => ({
+            console.log('success', data);
+            ['vitagen', 'vitagen-less-sugar'].forEach(type => {
+              this.tiers[type] = data.results.filter(tier =>
+                tier.properties.Type.select.name == type
+              ).map(tier => ({
                 min: tier.properties['Min'].number,
                 incentive: tier.properties['Incentive'].number,
               }));
+            });
           }
         });
       }).catch(err => console.log('Fail', err));
     },
-    toggleType: function () {
-      this.Type = this.Type == 'vitagen'? 'vitagen-less-sugar': 'vitagen';
-    },
     search: function () {
-      if (['vitagen', 'vitagen-less-sugar'].indexOf(this.Type ?? 'vitagen') == -1) {
-        this.Type = 'vitagen';
-      }
-      window.location.href = window.location.pathname + '?year-month=' + this.yearmonth + '&type=' + this.Type;
+      window.location.href = window.location.pathname + '?year-month=' + this.yearmonth;
     }
   },
   data: function () {
@@ -135,18 +149,10 @@ export default {
     const yearmonth_fromurl = urlParams.get('year-month');
     const yearmonth = yearmonth_fromurl? yearmonth_fromurl: [now.getFullYear(), now.getMonth() + 1].join('-');
 
-    const type_from_url = urlParams.get('type');
-    if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
-      window.location.href = window.location.pathname;
-    }
-    const type = type_from_url? type_from_url: 'vitagen';
-
     return {
       yearmonth,
-      records: [],
-      tiers: [],
-      Type: type,
-      OriginalType: type,
+      records: {},
+      tiers: {},
     }
   }
 }
