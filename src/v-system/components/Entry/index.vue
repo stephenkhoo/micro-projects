@@ -88,7 +88,10 @@ export default {
         } else {
           alert('Success');
           console.log('data', data1, data2)
+
+          // Reset
           this.loading = false;
+          ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim', 'T_LS', 'K_LS', 'CY_LS', 'Beng_LS', 'Hoon_LS', 'Sim_LS'].forEach(key => this[key] = '');
         }
       } catch(err) {
         console.log(err);
@@ -100,18 +103,18 @@ export default {
       year: (new Date).getFullYear(),
       month: (new Date).getMonth() + 1,
       date: (new Date).getDate(),
-      T: 0,
-      K: 0,
-      CY: 0,
-      Beng: 0,
-      Hoon: 0,
-      Sim: 0,
-      T_LS: 0,
-      K_LS: 0,
-      CY_LS: 0,
-      Beng_LS: 0,
-      Hoon_LS: 0,
-      Sim_LS: 0,
+      T: "",
+      K: "",
+      CY: "",
+      Beng: "",
+      Hoon: "",
+      Sim: "",
+      T_LS: "",
+      K_LS: "",
+      CY_LS: "",
+      Beng_LS: "",
+      Hoon_LS: "",
+      Sim_LS: "",
       publicPath: process.env.BASE_URL,
       loading: false,
     }
