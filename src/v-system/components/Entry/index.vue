@@ -19,7 +19,12 @@
       <Input name="sim" placeholder="Sim" v-model:value="Sim" />
       <Input name="sim" placeholder="Sim LS" v-model:value="Sim_LS" />
     </div>
-    <button @click="submit" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+    <div v-if="!loading">
+      <button @click="submit" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+    </div>
+    <div v-else>
+      <button class="pointer-events-none opacity-50 text-center my-2 mx-auto block w-32 bg-blue-500 text-white font-bold py-2 px-4 rounded">Submit</button>
+    </div>
   </App>
 </template>
 
@@ -39,6 +44,7 @@ export default {
       let datestring = `${year}-${('00' + month).substr(-2)}-${('00' + date).substr(-2)}`;
       let fulldate = Date.parse(datestring);
       try {
+        this.loading = true;
         let response1 = await fetch("https://notion-api.imaginepen.com/v1/pages", {
           method: 'POST',
           body: JSON.stringify({
@@ -82,6 +88,7 @@ export default {
         } else {
           alert('Success');
           console.log('data', data1, data2)
+          this.loading = false;
         }
       } catch(err) {
         console.log(err);
@@ -105,7 +112,8 @@ export default {
       Beng_LS: 0,
       Hoon_LS: 0,
       Sim_LS: 0,
-      publicPath: process.env.BASE_URL
+      publicPath: process.env.BASE_URL,
+      loading: false,
     }
   }
 }
