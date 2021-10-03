@@ -105,7 +105,6 @@ export default {
               }
               this.records[result.properties['Date'].date.start][result.properties['Type'].select.name] = result
             });
-            console.log(this.records);
           }
         });
       }).catch(err => console.log('Fail', err));
@@ -152,7 +151,10 @@ export default {
     return {
       yearmonth,
       records: {},
-      tiers: {},
+      tiers: {
+        "vitagen": [],
+        "vitagen-less-sugar": [],
+      },
     }
   }
 }

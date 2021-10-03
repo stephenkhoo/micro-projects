@@ -1,32 +1,50 @@
 <template>
-  <App :title="'Report for ' + OriginalType" :home="true">
+  <App title="Report" :home="true">
     <div class="w-full sticky left-0">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
-      <div @click="toggleType" class="group relative mx-auto max-w-[300px] my-8 w-1/2 flex justify-between border-b-2 focus-within:border-blue-500">
-        <input placeholder=" "
-          class="focus:outline-none mt-2 mb-1 px-1 bg-transparent"
-          id="type"
-          name="type"
-          :value="Type"
-        />
-        <label class="placeholder:text-transparent origin-top-left group-focus-within:-translate-y-5 group-focus-within:scale-75 group-focus-within:text-blue-500 absolute top-0 left-0 mt-2 mb-1 px-1 -z-1 duration-200 transition-transform" for="type">Type</label>
-      </div>
       <button @click="search" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
     </div>
     <div class="max-h-full border-gray-200 text-xl">
       <TableHeader />
-      <MonthNoOfPackageAndIncentive v-for="month in 12" :key="month" :title="[current_year, month].join('-')" :records="recordsOfMonth(current_year, month)" :tiers="tiers"/>
+      <MonthNoOfPackageAndIncentive v-for="month in 12" :key="month"
+        :title="[current_year, month].join('-')"
+        :records="recordsOfMonth(current_year, month)"
+        :records_ls="recordsOfMonth(current_year, month, true)"
+        :tiers="tiers['vitagen']"
+        :tiers_ls="tiers['vitagen-less-sugar']"
+      />
     <div class="flex">
       <div class="w-40 flex-grow-2 flex-shrink-0 text-right px-3 py-4 border-b border-r border-gray-200">
         {{ current_year }}
       </div>
-      <NoOfPackageAndIncentive :data="total_of_account('T')" />
-      <NoOfPackageAndIncentive :data="total_of_account('K')" />
-      <NoOfPackageAndIncentive :data="total_of_account('CY')" />
-      <NoOfPackageAndIncentive :data="total_of_account('Beng')" />
-      <NoOfPackageAndIncentive :data="total_of_account('Hoon')" />
-      <NoOfPackageAndIncentive :data="total_of_account('Sim')" />
-      <NoOfPackageAndIncentive :data="total_of_year()" />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('T')"
+        :data_ls="total_of_account('T', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('K')"
+        :data_ls="total_of_account('K', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('CY')"
+        :data_ls="total_of_account('CY', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('Beng')"
+        :data_ls="total_of_account('Beng', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('Hoon')"
+        :data_ls="total_of_account('Hoon', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_account('Sim')"
+        :data_ls="total_of_account('Sim', true)"
+      />
+      <NoOfPackageAndIncentive
+        :data="total_of_year()"
+        :data_ls="total_of_year(true)"
+      />
     </div>
     </div>
   </App>
@@ -49,15 +67,23 @@ export default {
     this.fetchIncentiveTiers();
   },
   methods: {
-    total_of_account(account) {
-      if (!this.records.length) return { no_of_package: 0, incentive: 0 };
+    getRecords(less_sugar = false) {
+      let key = less_sugar? 'vitagen-less-sugar': 'vitagen';
+      return Object.values(this.records).map(record => record[key]);
+    },
+    getTiers(less_sugar = false) {
+      let key = less_sugar? 'vitagen-less-sugar': 'vitagen';
+      return this.tiers[key] || [];
+    },
+    total_of_account(account, less_sugar = false) {
+      if (!this.getRecords(less_sugar).length) return { no_of_package: 0, incentive: 0 };
       const month_conclusion = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        .map(month => this.recordsOfMonth(this.year, month))
+        .map(month => this.recordsOfMonth(this.year, month, less_sugar))
         .map(month_records => {
           if (!month_records.length) return { no_of_package: 0, incentive: 0 };
           let no_of_package = month_records.map(record => record.properties[account].number).reduce((cul, value) => cul + value);
           let incentive = 0;
-          let tier = this.tiers.find(tier => no_of_package > tier.min);
+          let tier = this.getTiers(less_sugar).find(tier => no_of_package > tier.min);
           if (tier) {
             incentive = tier.incentive;
           }
@@ -71,9 +97,9 @@ export default {
         incentive: month_conclusion.map(record => record.incentive).reduce((cul, incentive) => cul + incentive)
       }
     },
-    total_of_year() {
+    total_of_year(less_sugar = false) {
       let array_of_total = ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim']
-        .map(account => this.total_of_account(account));
+        .map(account => this.total_of_account(account, less_sugar));
 
       let no_of_package = array_of_total
         .map(total => total.no_of_package)
@@ -87,8 +113,8 @@ export default {
         no_of_package, incentive
       }
     },
-    recordsOfMonth(year, month) {
-      return this.records.filter(record => record.properties['Year Month'].formula.string == [year, month].join('-'));
+    recordsOfMonth(year, month, less_sugar = false) {
+      return this.getRecords(less_sugar).filter(r => r).filter(record => record.properties['Year Month'].formula.string == [year, month].join('-'));
     },
     total_of_package(record) {
       return ['T', 'K', 'CY', 'Beng', 'Hoon', 'Sim'].map(account => record.properties[account].number || 0).reduce((cul, value) => cul + value);
@@ -102,11 +128,6 @@ export default {
               "property": "Year",
               "text": {
                 "equals": this.year,
-              }
-            }, {
-              "property": "Type",
-              "select": {
-                "equals": this.Type,
               }
             }],
           },
@@ -123,7 +144,12 @@ export default {
             console.log('fail', data)
           } else {
             console.log('success', data)
-            this.records = data.results;
+            data.results.forEach(result => {
+              if (!this.records[result.properties['Date'].date.start]) {
+                this.records[result.properties['Date'].date.start] = {}
+              }
+              this.records[result.properties['Date'].date.start][result.properties['Type'].select.name] = result
+            });
           }
         });
       }).catch(err => console.log('Fail', err));
@@ -144,25 +170,21 @@ export default {
           if (data.status > 300) {
             console.log('fail', data)
           } else {
-            console.log('success', data)
-            this.tiers = data.results
-              .filter(tier => tier.properties.Type.select.name == this.Type)
-              .map(tier => ({
+            console.log('success', data);
+            ['vitagen', 'vitagen-less-sugar'].forEach(type => {
+              this.tiers[type] = data.results.filter(tier =>
+                tier.properties.Type.select.name == type
+              ).map(tier => ({
                 min: tier.properties['Min'].number,
                 incentive: tier.properties['Incentive'].number,
               }));
+            });
           }
         });
       }).catch(err => console.log('Fail', err));
     },
-    toggleType: function () {
-      this.Type = this.Type == 'vitagen'? 'vitagen-less-sugar': 'vitagen';
-    },
     search: function () {
-      if (['vitagen', 'vitagen-less-sugar'].indexOf(this.Type ?? 'vitagen') == -1) {
-        this.Type = 'vitagen';
-      }
-      window.location.href = window.location.pathname + '?year=' + this.year + '&type=' + this.Type;
+      window.location.href = window.location.pathname + '?year=' + this.year;
     }
   },
   data: function () {
@@ -171,19 +193,14 @@ export default {
     const year_fromurl = urlParams.get('year');
     const year = year_fromurl? year_fromurl: now.getFullYear().toFixed(0);
 
-    const type_from_url = urlParams.get('type');
-    if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
-      window.location.href = window.location.pathname;
-    }
-    const type = type_from_url? type_from_url: 'vitagen';
-
     return {
       year,
       current_year: year,
-      records: [],
-      tiers: [],
-      Type: type,
-      OriginalType: type,
+      records: {},
+      tiers: {
+        "vitagen": [],
+        "vitagen-less-sugar": [],
+      },
     }
   }
 }
