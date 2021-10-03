@@ -1,6 +1,5 @@
 <template>
   <App :title="'Entry for ' + Type" :home="true">
-    <a :href="publicPath + 'v-system/entry.html?type=' + OppositeType" class="text-center my-2 mx-auto block w-64 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change to {{ OppositeType }}</a>
     <div id="date" class="text-xl">
       <MaterialInput name="year" placeholder="Year" v-model:value="year"/>
       <MaterialInput name="month" placeholder="Month" v-model:value="month"/>
@@ -8,11 +7,17 @@
     </div>
     <div id="entry-body" class="text-xl">
       <Input name="t" placeholder="T" v-model:value="T" />
+      <Input name="t" placeholder="T LS" v-model:value="T_LS" />
       <Input name="k" placeholder="K" v-model:value="K" />
+      <Input name="k" placeholder="K LS" v-model:value="K_LS" />
       <Input name="cy" placeholder="CY" v-model:value="CY" />
+      <Input name="cy" placeholder="CY LS" v-model:value="CY_LS" />
       <Input name="beng" placeholder="Beng" v-model:value="Beng" />
+      <Input name="beng" placeholder="Beng LS" v-model:value="Beng_LS" />
       <Input name="hoon" placeholder="Hoon" v-model:value="Hoon" />
+      <Input name="hoon" placeholder="Hoon LS" v-model:value="Hoon_LS" />
       <Input name="sim" placeholder="Sim" v-model:value="Sim" />
+      <Input name="sim" placeholder="Sim LS" v-model:value="Sim_LS" />
     </div>
     <button @click="submit" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
   </App>
@@ -30,47 +35,60 @@ export default {
   },
   methods: {
     submit: async function () {
-      let { T, K, CY, Beng, Hoon, Sim, year, month, date, Type } = this;
+      let { T, K, CY, Beng, Hoon, Sim, T_LS, K_LS, CY_LS, Beng_LS, Hoon_LS, Sim_LS, year, month, date } = this;
       let datestring = `${year}-${('00' + month).substr(-2)}-${('00' + date).substr(-2)}`;
       let fulldate = Date.parse(datestring);
-
-      fetch("https://notion-api.imaginepen.com/v1/pages", {
-        method: 'POST',
-        body: JSON.stringify({
-          parent: { database_id: "d5a1624f88e54bf0a458dacde772b34f" },
-          properties: {
-            ...(isNaN(fulldate)? {}: { Date: { start: datestring } }),
-            version: 1,
-            T: parseInt(T),
-            K: parseInt(K),
-            CY: parseInt(CY),
-            Beng: parseInt(Beng),
-            Hoon: parseInt(Hoon),
-            Sim: parseInt(Sim),
-            Type: { "name": Type },
-          }
+      try {
+        let response1 = await fetch("https://notion-api.imaginepen.com/v1/pages", {
+          method: 'POST',
+          body: JSON.stringify({
+            parent: { database_id: "d5a1624f88e54bf0a458dacde772b34f" },
+            properties: {
+              ...(isNaN(fulldate)? {}: { Date: { start: datestring } }),
+              version: 1,
+              T: parseInt(T),
+              K: parseInt(K),
+              CY: parseInt(CY),
+              Beng: parseInt(Beng),
+              Hoon: parseInt(Hoon),
+              Sim: parseInt(Sim),
+              Type: { "name": "vitagen" },
+            }
+          })
         })
-      }).then(response => {
-        response.json().then(data => {
-          if (data.status > 300) {
-            alert('Fail');
-            console.log('data', data)
-          } else {
-            alert('Success');
-            console.log('data', data)
-          }
-        });
-      }).catch(err => console.log('Fail', err));
+        let response2 = await fetch("https://notion-api.imaginepen.com/v1/pages", {
+          method: 'POST',
+          body: JSON.stringify({
+            parent: { database_id: "d5a1624f88e54bf0a458dacde772b34f" },
+            properties: {
+              ...(isNaN(fulldate)? {}: { Date: { start: datestring } }),
+              version: 1,
+              T: parseInt(T_LS),
+              K: parseInt(K_LS),
+              CY: parseInt(CY_LS),
+              Beng: parseInt(Beng_LS),
+              Hoon: parseInt(Hoon_LS),
+              Sim: parseInt(Sim_LS),
+              Type: { "name": "vitagen-less-sugar" },
+            }
+          })
+        })
+
+        let data1 = await response1.json();
+        let data2 = await response2.json();
+        if (data1.status > 300 || data2.status > 300) {
+          alert('Fail');
+          console.log('data', data1, data2)
+        } else {
+          alert('Success');
+          console.log('data', data1, data2)
+        }
+      } catch(err) {
+        console.log(err);
+      }
     },
   },
   data: function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const type_from_url = urlParams.get('type');
-    if (['vitagen', 'vitagen-less-sugar'].indexOf(type_from_url ?? 'vitagen') == -1) {
-      window.location.href = window.location.pathname;
-    }
-    const type = type_from_url? type_from_url: 'vitagen';
-
     return {
       year: (new Date).getFullYear(),
       month: (new Date).getMonth() + 1,
@@ -81,8 +99,12 @@ export default {
       Beng: 0,
       Hoon: 0,
       Sim: 0,
-      Type: type,
-      OppositeType: type == 'vitagen'? 'vitagen-less-sugar': 'vitagen',
+      T_LS: 0,
+      K_LS: 0,
+      CY_LS: 0,
+      Beng_LS: 0,
+      Hoon_LS: 0,
+      Sim_LS: 0,
       publicPath: process.env.BASE_URL
     }
   }
