@@ -60,6 +60,7 @@ import MaterialInput from '../MaterialInput.vue';
 import TableHeader from '../TableHeader.vue';
 import NoOfPackage from '../NoOfPackage.vue';
 import MonthNoOfPackageAndIncentive from '../MonthNoOfPackageAndIncentive.vue';
+import addRecord from '../../addRecord.js';
 
 export default {
   name: 'Record',
@@ -103,7 +104,7 @@ export default {
               if (!this.records[result.properties['Date'].date.start]) {
                 this.records[result.properties['Date'].date.start] = {}
               }
-              this.records[result.properties['Date'].date.start][result.properties['Type'].select.name] = result
+              this.records[result.properties['Date'].date.start][result.properties['Type'].select.name] = addRecord(result, this.records[result.properties['Date'].date.start][result.properties['Type'].select.name])
             });
           }
         });
