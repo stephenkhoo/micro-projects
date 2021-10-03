@@ -6,7 +6,7 @@
     </label>
     <input
       placeholder=" "
-      class="w-2/3 focus:outline-none mt-2 mb-1 px-4"
+      class="w-1/2 focus:outline-none mt-2 mb-1 px-4"
       :id="name"
       :name="name"
       :value="value"

@@ -7,17 +7,17 @@
     </div>
     <div id="entry-body" class="text-xl">
       <Input name="t" placeholder="T" v-model:value="T" />
-      <Input name="t" placeholder="T LS" v-model:value="T_LS" />
+      <Input name="t" placeholder="T L/S" v-model:value="T_LS" />
       <Input name="k" placeholder="K" v-model:value="K" />
-      <Input name="k" placeholder="K LS" v-model:value="K_LS" />
+      <Input name="k" placeholder="K L/S" v-model:value="K_LS" />
       <Input name="cy" placeholder="CY" v-model:value="CY" />
-      <Input name="cy" placeholder="CY LS" v-model:value="CY_LS" />
+      <Input name="cy" placeholder="CY L/S" v-model:value="CY_LS" />
       <Input name="beng" placeholder="Beng" v-model:value="Beng" />
-      <Input name="beng" placeholder="Beng LS" v-model:value="Beng_LS" />
+      <Input name="beng" placeholder="Beng L/S" v-model:value="Beng_LS" />
       <Input name="hoon" placeholder="Hoon" v-model:value="Hoon" />
-      <Input name="hoon" placeholder="Hoon LS" v-model:value="Hoon_LS" />
+      <Input name="hoon" placeholder="Hoon L/S" v-model:value="Hoon_LS" />
       <Input name="sim" placeholder="Sim" v-model:value="Sim" />
-      <Input name="sim" placeholder="Sim LS" v-model:value="Sim_LS" />
+      <Input name="sim" placeholder="Sim L/S" v-model:value="Sim_LS" />
     </div>
     <div v-if="!loading">
       <button @click="submit" class="text-center my-2 mx-auto block w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
