@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-stretch h-screen">
-    <Sidebar :closeSidebar="closeSidebar" :showText="showText" />
+    <Sidebar :active="active" :closeSidebar="closeSidebar" :showText="showText" />
     <div id="main" class="flex-1 overflow-y-auto">
       <div class="px-2 my-2 flex justify-end md:justify-between items-center h-12 w-full">
         <button class="focus:outline-none" @click="toggleShowText">
@@ -45,6 +45,7 @@ export default {
   data() {
     return {
       showText: true,
+      active: 'dashboard',
     }
   }
 }

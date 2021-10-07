@@ -1,5 +1,10 @@
 <template>
-  <div id="sidebar" :class="{ 'hidden': !showText }" class="md:w-auto w-full bg-blue-500 pl-2 md:block">
+  <div id="sidebar"
+    :class="{ 'hidden': !showText }"
+    class="md:w-auto w-full bg-blue-500 pl-2 md:block"
+    @mouseover="sidebarHovered = true"
+    @mouseleave="sidebarHovered = false"
+  >
     <nav class="flex w-full">
       <div id="icons" class="my-2 w-full">
         <div class="py-2 pb-6 flex justify-between text-bold text-white cursor-pointer w-full">
@@ -13,13 +18,13 @@
             <Icon icon="close"></Icon>
           </div>
         </div>
-        <NavItem :showText="showText" icon="home" text="dashboard" />
-        <NavItem :showText="showText" icon="user-group" text="customers" />
-        <NavItem :showText="showText" icon="chat" text="message" />
-        <NavItem :showText="showText" icon="information-circle" text="help" />
-        <NavItem :showText="showText" icon="cog" text="settings" />
-        <NavItem :showText="showText" icon="lock-closed" text="password" />
-        <NavItem :showText="showText" icon="logout" text="sign out" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="home" text="dashboard" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="user-group" text="customers" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="chat" text="message" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="information-circle" text="help" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="cog" text="settings" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="lock-closed" text="password" :active="active" />
+        <NavItem :sidebarHovered="sidebarHovered" :showText="showText" icon="logout" text="sign out" :active="active" />
       </div>
     </nav>
   </div>
@@ -37,6 +42,12 @@ export default {
   props: {
     showText: Boolean,
     closeSidebar: Function,
+    active: String,
+  },
+  data() {
+    return {
+      sidebarHovered: false,
+    }
   }
 }
 </script>
