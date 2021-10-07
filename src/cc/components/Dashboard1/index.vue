@@ -1,8 +1,19 @@
 <template>
-  <div class="flex items-stretch h-screen">
+  <div class="flex items-stretch h-screen m-auto max-w-screen-2xl w-full bg-white overflow-hidden">
     <Sidebar :active="active" :closeSidebar="closeSidebar" :showText="showText" />
-    <div id="main" class="flex-1 overflow-y-auto">
-      <div class="px-2 my-2 flex justify-end md:justify-between items-center h-12 w-full">
+    <div id="main" class="flex-1 flex flex-col overflow-y-auto">
+      <!-- Top bar -->
+      <div class="px-6 my-2 flex shadow-md md:shadow-none justify-between items-center h-12 w-full">
+        <div class="md:hidden">
+          <div class="py-2 flex items-center justify-between font-bold w-full">
+            <div class="flex">
+              <div class="ml-2 mr-4">
+                <Icon icon="logo"></Icon>
+              </div>
+              <div class="py-2 capitalize">brand name</div>
+            </div>
+          </div>
+        </div>
         <button class="focus:outline-none" @click="toggleShowText">
           <Icon icon="menu"></Icon>
         </button>
@@ -20,19 +31,36 @@
           <Avatar />
         </div>
       </div>
+      <!-- End of top bar -->
+
+      <!-- Summary Display -->
+      <div id="summary" class="grid md:grid-cols-2 lg:grid-cols-4 grid-cols-1 text-black px-4">
+        <Summary title="daily views" icon="eye" />
+        <Summary title="sales" icon="shopping-cart" />
+        <Summary title="comments" icon="chat-alt2" />
+        <Summary type="money" title="earning" icon="cash" />
+      </div>
+      <!-- End of Summary Display -->
+      <div class="min-h-[400px] flex-1 flex flex-col lg:flex-row items-stretch space-y-4 lg:space-y-0 lg:space-x-4 px-6 my-4">
+        <RecentOrders />
+        <RecentCustomers />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Sidebar from './Sidebar.vue';
+import Summary from './Summary.vue';
+import RecentOrders from './RecentOrders.vue';
+import RecentCustomers from './RecentCustomers.vue';
 import Icon from '../Icon.vue';
 import Avatar from '../Avatar.vue';
 
 export default {
   name: 'Dashboard',
   components: {
-    Sidebar, Icon, Avatar
+    Sidebar, Icon, Avatar, Summary, RecentOrders, RecentCustomers
   },
   methods: {
     toggleShowText() {

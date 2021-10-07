@@ -2,7 +2,7 @@
   <div :class="{
     'bg-white text-blue-500': active == text && !sidebarHovered,
     'hover:bg-white hover:text-blue-500': active != text || sidebarHovered,
-  }" class="group relative py-2 rounded-tl-full rounded-bl-full flex text-bold text-white cursor-pointer">
+  }" class="group relative py-2 rounded-tl-full rounded-bl-full flex font-bold text-white cursor-pointer">
     <div class="ml-2 mr-4">
       <Icon :icon="icon"></Icon>
     </div>
