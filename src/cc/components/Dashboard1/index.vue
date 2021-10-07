@@ -1,5 +1,7 @@
 <template>
-  <div class="flex items-stretch h-screen m-auto max-w-screen-2xl w-full bg-white overflow-hidden">
+  <div class="relative flex items-stretch h-screen m-auto max-w-screen-2xl w-full bg-white">
+    <div class="absolute hidden md:block top-0 right-full w-1/3 h-full bg-gradient-to-l from-blue-500 to-gray-200"></div>
+    <div class="absolute hidden md:block top-0 left-full w-1/3 h-full bg-gradient-to-r from-white to-gray-200"></div>
     <Sidebar :active="active" :closeSidebar="closeSidebar" :showSidebar="showSidebar" />
     <div id="main" class="flex-1 flex flex-col overflow-y-auto">
       <!-- Top bar -->
