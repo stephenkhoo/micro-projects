@@ -21,5 +21,6 @@ module.exports = {
     entry: page('entry', 'src/v-system/entry.js', 'v-system/entry.html', 'V-system Entry'),
     report: page('report', 'src/v-system/report.js', 'v-system/report.html', 'V-system Report'),
     record: page('record', 'src/v-system/record.js', 'v-system/record.html', 'V-system Record'),
+    cc_dashboard1: page('cc_dashboard1', 'src/cc/dashboard1.js', 'cc/dashboard1.html', 'CC Dashboard'),
   }
 }
