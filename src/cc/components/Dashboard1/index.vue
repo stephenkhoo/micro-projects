@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-stretch h-screen m-auto max-w-screen-2xl w-full bg-white overflow-hidden">
-    <Sidebar :active="active" :closeSidebar="closeSidebar" :showText="showText" />
+    <Sidebar :active="active" :closeSidebar="closeSidebar" :showSidebar="showSidebar" />
     <div id="main" class="flex-1 flex flex-col overflow-y-auto">
       <!-- Top bar -->
       <div class="px-6 my-2 flex shadow-md md:shadow-none justify-between items-center h-12 w-full">
@@ -46,6 +46,7 @@
         <RecentCustomers />
       </div>
     </div>
+    <QuickNavigateForMobile :hideQuickNavigate="showSidebar" />
   </div>
 </template>
 
@@ -54,25 +55,26 @@ import Sidebar from './Sidebar.vue';
 import Summary from './Summary.vue';
 import RecentOrders from './RecentOrders.vue';
 import RecentCustomers from './RecentCustomers.vue';
+import QuickNavigateForMobile from './QuickNavigateForMobile.vue';
 import Icon from '../Icon.vue';
 import Avatar from '../Avatar.vue';
 
 export default {
   name: 'Dashboard',
   components: {
-    Sidebar, Icon, Avatar, Summary, RecentOrders, RecentCustomers
+    Sidebar, Icon, Avatar, Summary, RecentOrders, RecentCustomers, QuickNavigateForMobile
   },
   methods: {
     toggleShowText() {
-      this.showText = !this.showText;
+      this.showSidebar = !this.showSidebar;
     },
     closeSidebar() {
-      this.showText = false;
+      this.showSidebar = false;
     }
   },
   data() {
     return {
-      showText: true,
+      showSidebar: true,
       active: 'dashboard',
     }
   }
